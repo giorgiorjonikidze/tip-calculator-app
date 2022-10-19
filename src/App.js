@@ -1,84 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./assets/images/logo.svg";
 import iconDollar from "./assets/images/icon-dollar.svg";
 import iconPerson from "./assets/images/icon-person.svg";
+import { validate, validatePerson } from "./utils/validation";
+import { totalTipCounter, tipAmountCounter } from "./utils/countingFunctions";
 
 function App() {
   // რამდენია გადასახადი
-  const [billAmount, setBillAmount] = useState();
+  const [billAmount, setBillAmount] = useState("");
   // ხალხის რაოდენობა
-  const [numberOfPerson, setNumberOfPerson] = useState();
+  const [numberOfPerson, setNumberOfPerson] = useState("");
   // ხურდის რაოდენობა ქ
-  const [tipPersentage, setTipPersentage] = useState();
+  const [tipPersentage, setTipPersentage] = useState("");
   // ხურდის რაოდენობა დათვლილი
   const [tipAmount, setTipAmount] = useState("$0.00");
   // ჯამი
   const [total, setTotal] = useState("$0.00");
-  // ხურდის რაოდენობა ქასტომ
-  const [customTip, setCustomTip] = useState("");
-  // არავალიდური გადასახადი
-  const [invalidBill, setInvalidBill] = useState(false)
-  const [invalidPeople, setInvalidPeople] = useState(false)
-  const [invalidTip, setInvalidTip] = useState(false)
 
+  const [peopleIsZero, setPeopleIsZero] = useState(false);
 
-
-  const validate =() => {
-    let errors = 0
-    // validation of bill 
-    if(!isNaN(billAmount) && billAmount !== "") {
-      setInvalidBill(true)
-    } else {
-      setInvalidBill(false)
-      errors ++
+  useEffect(() => {
+    const errors = validate(billAmount, numberOfPerson, tipPersentage);
+    console.log(peopleIsZero);
+    if (errors === 0) {
+      const tip = tipAmountCounter(billAmount, numberOfPerson, tipPersentage);
+      setTipAmount(tip);
+      const totalTip = totalTipCounter(billAmount, tipPersentage);
+      setTotal(totalTip);
     }
-    // validation of Number of people 
-    if(!isNaN(numberOfPerson) && numberOfPerson !== "") {
-      setInvalidPeople(true)
-    } else {
-      setInvalidPeople(false)
-      errors ++
-    }
-    // validation of tip 
-    if(tipPersentage.length !== 0 || ((!isNaN(customTip) && customTip !== ""))) {
-      setInvalidTip(true)
-    } else {
-      setInvalidTip(false)
-      errors ++
-    }
-    return errors
-  }
-
-  const TipAmountCounter = () => {
-     const tipAmount = (billAmount/numberOfPerson)*tipPersentage/100
-     setTipAmount("$"+tipAmount.toFixed(2))
-  }
-
-  const TotalTipCounter = () => {
-    const totalTip = billAmount*tipPersentage/100
-    setTotal("$"+ totalTip.toFixed(2))
-  }
+  }, [billAmount, numberOfPerson, tipPersentage]);
 
   const sumbitHandler = (e) => {
-    e.preventDefault()
-    const errors = validate()
-    // console.log(invalidBill, invalidPeople, invalidTip)
-    if(errors === 0) {
-      TipAmountCounter()
-      TotalTipCounter()
-    }
-    
-  }
+    setBillAmount("");
+    setNumberOfPerson("");
+    setTipPersentage("");
+    setTipAmount("$0.00");
+    setTotal("$0.00");
+  };
 
+  // event handlers
   const billChangeHandler = (e) => {
     setBillAmount(e.target.value);
   };
 
   const personChangeHandler = (e) => {
     setNumberOfPerson(e.target.value);
+    setPeopleIsZero(validatePerson(e.target.value));
   };
 
-
+  const p5Handler = () => {
+    setTipPersentage("5");
+  };
+  const p10Handler = () => {
+    setTipPersentage("10");
+  };
+  const P15Handler = () => {
+    setTipPersentage("15");
+  };
+  const p25Handler = () => {
+    setTipPersentage("25");
+  };
+  const p50tHandler = () => {
+    setTipPersentage("50");
+  };
 
   return (
     <div className="flex justify-center items-center h-screen w-screen flex-col bg-light-green">
@@ -90,9 +74,11 @@ function App() {
               Bill
             </label>
             <input
+              value={billAmount}
+              type="number"
               onChange={billChangeHandler}
               placeholder="0"
-              className="bg-[#F3F9FA] h-[48px] relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl max-w-[379px]"
+              className="bg-[#F3F9FA] h-[48px]  relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl max-w-[379px]"
             />
             <span className="absolute top-[45px] left-[22px]">
               <img src={iconDollar} />
@@ -105,44 +91,45 @@ function App() {
             </p>
             <div className="flex flex-wrap gap-[16px] mt-4 mb-8 xl:gap-[14px] xl:mb-10 xl:gap-y-[16px]">
               <input
-                onClick={() => setTipPersentage("5")}
+                onClick={p5Handler}
                 value="5%"
                 type="button"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] active:bg-active active:text-dark-green focus:bg-focus cursor-pointer focus:text-dark-green"
+                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] hover:bg-active hover:text-dark-green focus:bg-focus cursor-pointer focus:text-dark-green"
               />
 
               <input
-                onClick={() => setTipPersentage("10")}
+                onClick={p10Handler}
                 value="10%"
                 type="button"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] active:bg-active active:text-dark-green focus:bg-focus cursor-pointer  focus:text-dark-green"
+                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px]  hover:bg-active hover:text-dark-green focus:bg-focus cursor-pointer  focus:text-dark-green"
               />
 
               <input
-                onClick={() => setTipPersentage("15")}
+                onClick={P15Handler}
                 value="15%"
                 type="button"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] active:bg-active active:text-dark-green focus:bg-focus cursor-pointer  focus:text-dark-green"
+                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px]  hover:bg-active hover:text-dark-green focus:bg-focus cursor-pointer  focus:text-dark-green"
               />
 
               <input
-                onClick={() => setTipPersentage("25")}
+                onClick={p25Handler}
                 value="25%"
                 type="button"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] active:bg-active active:text-dark-green focus:bg-focus cursor-pointer focus:text-dark-green"
+                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px]  hover:bg-active hover:text-dark-green focus:bg-focus cursor-pointer focus:text-dark-green"
               />
 
               <input
-                onClick={() => setTipPersentage("50")}
+                onClick={p50tHandler}
                 value="50%"
                 type="button"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] active:bg-active active:text-dark-green focus:bg-focus cursor-pointer focus:text-dark-green"
+                className="w-[146px] h-[48px] flex justify-center items-center bg-dark-green rounded-[5px] text-white text-2xl font-bold font-spaceMono xl:w-[117px] hover:bg-active hover:text-dark-green focus:bg-focus cursor-pointer focus:text-dark-green"
               />
 
               <input
+                value={tipPersentage}
                 onChange={(e) => setTipPersentage(e.target.value)}
                 placeholder="Custom"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-[#F3F9FA] rounded-[5px]  text-2xl font-bold font-spaceMono text-right box-border px-[17px] text-font-color xl:w-[117px]"
+                className="w-[146px] h-[48px] flex justify-center items-center bg-[#F3F9FA] rounded-[5px]   text-2xl font-bold font-spaceMono text-right box-border px-[17px] text-font-color xl:w-[117px] focus:outline-medium-green "
               />
             </div>
             <div className="flex flex-col relative  max-w-[379px]">
@@ -150,13 +137,20 @@ function App() {
                 Number of People
               </label>
               <input
+                value={numberOfPerson}
+                type="number"
                 onChange={personChangeHandler}
                 placeholder="0"
-                className="bg-[#F3F9FA] h-[48px] relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl"
+                className={!peopleIsZero ? 'valid-input' : "invalid-input"}
               />
               <span className="absolute top-[45px] left-[22px]">
                 <img src={iconPerson} />
               </span>
+              {peopleIsZero && (
+                <p className="font-spaceMono font-bold absolute right-[0px] text-alert">
+                  Can’t be zero
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -188,7 +182,11 @@ function App() {
                 {total}
               </p>
             </div>
-            <button onClick={sumbitHandler} type="submit" className="cursor-pointer h-12 bg-medium-green w-full rounded-[5px] text-dark-green text-xl font-bold font-spaceMono  xl:mb-4  xl:w-[333px] xl:mt-[122px]  active:bg-active active:text-dark-green">
+            <button
+              onClick={sumbitHandler}
+              type="submit"
+              className="cursor-pointer h-12 bg-medium-green w-full rounded-[5px] text-dark-green text-xl font-bold font-spaceMono  xl:mb-4  xl:w-[333px] xl:mt-[122px]  active:bg-active active:text-dark-green"
+            >
               RESET
             </button>
           </div>
@@ -199,4 +197,4 @@ function App() {
 }
 
 export default App;
-// 9 40
+

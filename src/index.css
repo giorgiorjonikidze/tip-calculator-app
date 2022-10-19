@@ -3,3 +3,21 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+.invalid-input  {
+    border: solid 2px #E17052;
+    @apply bg-[#F3F9FA] h-[48px] relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl  focus:outline-alert;
+}
+
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.valid-input {
+    @apply bg-[#F3F9FA] h-[48px] relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl focus:outline-medium-green focus-visible:border-medium-green;
+}
+
