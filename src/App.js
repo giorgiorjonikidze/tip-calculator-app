@@ -65,8 +65,8 @@ function App() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen w-screen flex-col bg-light-green">
-      <img src={logo} />
+    <div className="flex justify-center items-center h-100% w-screen flex-col bg-light-green pt-[50px] box-border xl:h-screen">
+      <img src={logo}  />
       <div className="w-[375px]  bg-white rounded-[25px] mt-10 box-border p-8 xl:w-[920px] flex flex-col xl:flex-row xl:p-8 xl:justify-between xl:pl-12 xl:mt-[88px]">
         <div className="xl:pt-[20px]">
           <div className="flex flex-col relative">
