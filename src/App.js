@@ -78,7 +78,7 @@ function App() {
               type="number"
               onChange={billChangeHandler}
               placeholder="0"
-              className="bg-[#F3F9FA] h-[48px]  relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl max-w-[379px]"
+              className="bg-[#F3F9FA] h-[48px]  relative rounded-[5px] font-spaceMono text-right box-border pr-[17px] font-bold text-2xl max-w-[379px] focus:outline-medium-green"
             />
             <span className="absolute top-[45px] left-[22px]">
               <img src={iconDollar} />
