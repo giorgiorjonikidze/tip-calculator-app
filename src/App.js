@@ -129,7 +129,7 @@ function App() {
                 value={tipPersentage}
                 onChange={(e) => setTipPersentage(e.target.value)}
                 placeholder="Custom"
-                className="w-[146px] h-[48px] flex justify-center items-center bg-[#F3F9FA] rounded-[5px]   text-2xl font-bold font-spaceMono text-right box-border px-[17px] text-font-color xl:w-[117px] focus:outline-medium-green "
+                className="w-[146px] h-[48px] flex justify-center items-center bg-[#F3F9FA] rounded-[5px]   text-2xl font-bold font-spaceMono text-right box-border px-[15px] text-font-color xl:w-[117px] focus:outline-medium-green "
               />
             </div>
             <div className="flex flex-col relative  max-w-[379px]">
